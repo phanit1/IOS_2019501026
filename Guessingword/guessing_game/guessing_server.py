@@ -12,51 +12,32 @@
             6.3 send a message "LOW" if the guess is lower than the secrent
         7. closes the client connection and waits for the next one
 '''
-import socket
-import threading
+import socket                
 from random import randint
 
-def function(sockobj, i):
-    rnum = randint(0,50)
-    connec, addr = sockobj.accept()
-    print("Connection from: " + str(addr))
-    guesses = 0
-    while True:
-        guesses = guesses + 1
-        data = connec.recv(1024)
-        connec.send('READY')
-        data = data.decode()
-        data = int(data)
-        if not data:
-            break
-        print("Data from connected user " + str(i) +" : " + str(data))
-        if data < rnum:
-            connec.send('LOW'.encode())
-        if data > rnum:
-            connec.send('HIGH'.encode())
-        if data == rnum:
-            connec.send(("Correct! <name> took "+str(guesses) +" attempts to guess the secret ").encode())
-            connec.close()
-            return
-def main():
-
-    totalconnec = 10
-
-    host = '10.10.11.215'
-    port = 5151
-    
-    sockobj = socket.socket()
-    
-    sockobj.bind((host, port))
-    
-    sockobj.listen(1)
-    threadarr = list()
-    for i in range(0, totalconnec):
-        thread = threading.Thread(target = function, args = (sockobj, i))
-        threadarr.append(thread)
-        threadarr[i].start()    
-    for i in range(0, totalconnec):
-        threadarr[i].join()
-
-if __name__ == '__main__':
-            main()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+port = 10004             
+s.bind(('',port))           
+s.listen(5)      
+randnum = randint(0,50)
+guesses = 0
+name = ""
+while True:
+	connec, addr = s.accept()		
+	while True:
+		data = connec.recv(1024).decode()
+		print("Input Recieved : "+data)
+		if(data.find('Hi') != -1):
+			name = data.split(" ")
+			connec.sendall("READY".encode())
+		else:
+			guesses = guesses+1
+			if(int(data) == randnum):
+				connec.sendall(("Correct! "+name[1]+" no of guesses "+str(guesses)).encode())
+				connec.close()
+				break
+			if(int(data)>randnum):
+				connec.sendall("HIGH".encode())
+			if(int(data)<randnum):
+				connec .sendall("LOW".encode())
+		       

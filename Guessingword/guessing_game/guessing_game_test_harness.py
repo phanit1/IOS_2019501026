@@ -25,7 +25,7 @@ if name:
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
   # Connect the socket to the port where the server is listening
-  server_address = ('10.10.11.215', 5151)
+  server_address = ('127.0.0.1', 10004)
   print ('connecting to %s port %s' % server_address)
   sock.connect(server_address)
   print ('Connection to the server meets the specification')
@@ -46,7 +46,7 @@ else:
 try:
     
     # Send data
-    message = "Hi " + name
+    message = 'Hi ' + name
     print ('sending "%s"' % message)
     sock.sendall(message.encode())
 
