@@ -60,27 +60,29 @@ def main():
     # you can change  the HTTPServer object if you are not following OOP
         # host = 
         # port = 8888
-    def handle_message(messsage):
-        http_response = b"""\
-            HTTP/1.1 200 OK
-            Content-Type: html;
-
-            <html>
-            <head>
-            <title> Tiny Web Server </title>
-            </head>
-            <body>
-            <h1> Website under construction </h1>
-            </body>
-            </html>
-            """
-        return http_response
     s = socket.socket()
-    s.bind(('10.10.11.215',8888))
+    s.bind(('127.0.0.1',3211))
     s.listen(5)
     message, addr = s.accept()
     data = message.recv(1024)
     message.sendall(handle_message(message))
     message.close()
+def handle_message(messsage):
+    http_response = b"""\
+    HTTP/1.1 200 OK
+    Content-Type: html;
+
+
+    <html>
+    <head>
+    <title> Tiny Web Server </title>
+    </head>
+    <body>
+    <h1> Website under construction </h1>
+    </body>
+    </html>
+    """
+    return http_response
+    
 if __name__ == '__main__':
         main()
