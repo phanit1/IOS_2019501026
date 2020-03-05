@@ -29,8 +29,8 @@ def process_request(http_request):
    uri = uri[1]
    
 
-   if(uri.find("favicon")!=-1):
-      return "".encode()
+   # if(uri.find("favicon")!=-1):
+   #    return "".encode()
    if(uri == "/"):
       http_response = "HTTP/1.1 200 OK\r\nContent-Type:text/html\r\n"
       content = "<h1>Webserver Under construction</h1>"  

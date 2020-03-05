@@ -2,7 +2,6 @@ import socket
 import os.path
 from os import path
 
-
 def bind_ip(ip,port):
    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -28,9 +27,6 @@ def process_request(http_request):
    uri = http_request.split(" ")
    uri = uri[1]
    
-
-   if(uri.find("favicon")!=-1):
-      return "".encode()
    if(uri == "/"):
       http_response = "HTTP/1.1 200 OK\r\nContent-Type:text/html\r\n"
       content = "<h1>Webserver Under construction</h1>"  
