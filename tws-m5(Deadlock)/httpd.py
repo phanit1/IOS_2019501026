@@ -1,6 +1,6 @@
 import socket                
 import os.path
-import os,sys,time
+import os,sys,time, signal
 from os import path
 
 document_root = "./"
@@ -112,9 +112,16 @@ def execute(url):
     parentStdin, childStdout = os.pipe()
     pid = os.fork()
     if pid:
+        time.sleep(3)
+        res, status = os.waitpid(0, os.WNOHANG)
         os.close(childStdout)
         os.dup2(parentStdin,stdin)
         stdin = os.fdopen(parentStdin)
+
+        if(res == 0):
+          res_text = "Terminated"
+          os.kill(pid, signal.SIGSTOP)
+          return 200, "text/html", len(res_text), res_text.encode()  
 
         inp = ""
         for line in sys.stdin:
@@ -131,9 +138,13 @@ def execute(url):
         elif("du" in url):
             args = ["du"]
             os.execvp(args[0], args)
-        
+        elif("bin/forever" in url):
+            args = ["sh","./tws-bin/forever.sh"]
+            os.execvp(args[0],args)
+
         else:
             exec(open(os.getcwd() + url).read())
+        os._exit(0)
 
 sock = bind_ip("",8188)
 start_server(sock)
